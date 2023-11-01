@@ -29,4 +29,23 @@ function pr_wp_rest_api_add_employee($request) {
         return $response;
     }
     
+
+    // prevent user from entering improper values
+    $employee_name = sanitize_text_field( $params['employee_name'] );
+    $employee_last_name = sanitize_text_field( $params['employee_last_name'] );
+    $cellphone = absint( $params['cellphone'] );
+    $hourly_wage = sanitize_text_field( $params['hourly_wage'] );
+    $job_title = sanitize_text_field( $params['job_title'] );
+    $hire_date = date( $params['hire_date'] );
+
+    // wordpress sql object
+    global $wpdb;
+
+    //prevent sql injection
+    $wpdb -> prepare(
+        "
+            INSERT INTO {$wpdb->prefix}employees (employee_name, employee_last_name, cellphone, hourly_wage, job_title, hire_date)
+            values (%s, %s, %d, %f, %s, %s)
+        "
+    );
 }
